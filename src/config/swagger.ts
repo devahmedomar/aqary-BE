@@ -1,3 +1,4 @@
+import path from 'path';
 import swaggerJsdoc from 'swagger-jsdoc';
 
 const options: swaggerJsdoc.Options = {
@@ -101,7 +102,7 @@ const options: swaggerJsdoc.Options = {
       { name: 'Stats' },
     ],
   },
-  apis: ['./src/**/*.routes.ts'], // doc comments in route files
+  apis: [path.join(__dirname, '..', '..', 'src', '**', '*.routes.ts')],
 };
 
 export const swaggerSpec = swaggerJsdoc(options);
