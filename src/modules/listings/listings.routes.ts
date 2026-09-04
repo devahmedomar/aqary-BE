@@ -158,6 +158,25 @@ adminListingsRouter.post(
 /**
  * @swagger
  * /admin/listings/{id}:
+ *   get:
+ *     summary: Get a single listing by ID (admin, any status)
+ *     tags: [Listings (admin)]
+ *     security: [{ bearerAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       '200': { description: Listing detail with images }
+ *       '404': { description: Not found }
+ */
+adminListingsRouter.get('/:id', asyncHandler(controller.getAdminListing));
+
+/**
+ * @swagger
+ * /admin/listings/{id}:
  *   patch:
  *     summary: Partially update a listing (creator or owner only)
  *     tags: [Listings (admin)]

@@ -94,6 +94,23 @@ export async function updateListingStatus(
   }
 }
 
+export async function getAdminListing(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const id = Number(req.params.id);
+    const listing = await service.findListingById(id);
+    if (!listing) throw new AppError('Listing not found', 404, 'NOT_FOUND');
+
+    const images = await service.getListingImages(id);
+    sendSuccess(res, { ...listing, images });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function deleteListing(
   req: Request,
   res: Response,
