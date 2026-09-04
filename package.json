@@ -1,0 +1,70 @@
+{
+  "name": "aqary-backend",
+  "version": "1.0.0",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint \"src/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "test": "jest",
+    "db:schema": "node -r ts-node/register db/apply-schema.ts",
+    "db:verify": "node -r ts-node/register db/seed-check.ts",
+    "db:setup-owner": "dotenv -e .env -- node -r ts-node/register db/setup-owner.ts",
+    "db:seed": "dotenv -e .env -- node -r ts-node/register db/seed-fake-data.ts"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "real-estate",
+    "express",
+    "typescript",
+    "postgres"
+  ],
+  "author": "",
+  "license": "ISC",
+  "description": "Beni Suef real estate platform backend",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.12.0",
+    "pg": "^8.23.0",
+    "swagger-jsdoc": "^6.3.0",
+    "swagger-ui-express": "^5.0.1",
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jest": "^30.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^26.4.1",
+    "@types/pg": "^8.23.1",
+    "@types/supertest": "^7.2.1",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
+    "@typescript-eslint/eslint-plugin": "^8.69.0",
+    "@typescript-eslint/parser": "^8.69.0",
+    "dotenv-cli": "^11.0.0",
+    "eslint": "^10.9.1",
+    "eslint-config-prettier": "^10.1.8",
+    "jest": "^30.5.1",
+    "prettier": "^3.9.6",
+    "supertest": "^7.2.2",
+    "ts-jest": "^29.4.12",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.69.0"
+  }
+}
