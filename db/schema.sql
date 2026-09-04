@@ -190,4 +190,17 @@ INSERT INTO property_types (name, name_ar, sort_order) VALUES
   ('Building', 'عمارة', 7)
 ON CONFLICT (name) DO NOTHING;
 
+-- -------------------------------------------------------------
+-- Listing view tracking (per-IP + 24h window)
+-- -------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS listing_views (
+  listing_id  INTEGER NOT NULL REFERENCES listings(id) ON DELETE CASCADE,
+  ip_hash     TEXT NOT NULL,
+  viewed_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
+  PRIMARY KEY (listing_id, ip_hash)
+);
+
+CREATE INDEX IF NOT EXISTS idx_listing_views_viewed
+  ON listing_views (viewed_at);
+
 COMMIT;

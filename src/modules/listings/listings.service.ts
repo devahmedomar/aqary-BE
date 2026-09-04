@@ -222,8 +222,25 @@ export async function findListingById(id: number): Promise<Listing | null> {
   return queryOne<Listing>('SELECT * FROM listings WHERE id = $1', [id]);
 }
 
-export async function incrementViews(id: number): Promise<void> {
-  await query('UPDATE listings SET views_count = views_count + 1 WHERE id = $1', [id]);
+export async function incrementViews(id: number, ipHash: string): Promise<boolean> {
+  const result = await queryOne<{ counted: boolean }>(
+    `WITH ins AS (
+       INSERT INTO listing_views (listing_id, ip_hash)
+       VALUES ($1, $2)
+       ON CONFLICT (listing_id, ip_hash) DO UPDATE
+         SET viewed_at = now()
+         WHERE listing_views.viewed_at < now() - INTERVAL '24 hours'
+       RETURNING viewed_at, (xmax = 0) AS is_new
+     )
+     UPDATE listings l
+       SET views_count = l.views_count + 1
+     FROM ins
+     WHERE l.id = $1
+       AND (ins.is_new OR ins.viewed_at > now() - INTERVAL '24 hours')
+     RETURNING true AS counted`,
+    [id, ipHash]
+  );
+  return result !== null;
 }
 
 export async function listFeaturedListings(limit = 6): Promise<Listing[]> {

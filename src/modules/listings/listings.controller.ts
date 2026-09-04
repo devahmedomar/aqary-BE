@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { createHash } from 'crypto';
 import { z } from 'zod';
 import { AppError } from '../../utils/AppError';
 import { sendSuccess } from '../../utils/response';
@@ -201,12 +202,13 @@ export async function getListingDetail(
     const listing = await service.findActiveListingById(id);
     if (!listing) throw new AppError('Listing not found', 404, 'NOT_FOUND');
 
-    // each detail view increments the counter (Phase 5.8)
-    await service.incrementViews(id);
+    const ip = req.ip ?? req.socket.remoteAddress ?? '0.0.0.0';
+    const ipHash = createHash('sha256').update(ip + (process.env.IP_SALT || 'aqary-default-salt')).digest('hex');
+    const counted = await service.incrementViews(id, ipHash);
 
     const images = await service.getListingImages(id);
-    // Re-read so views_count is current
-    const fresh = await service.findActiveListingById(id);
+    // Re-read so views_count is current only if it was incremented
+    const fresh = counted ? await service.findActiveListingById(id) : listing;
     sendSuccess(res, { ...(fresh ?? listing), images });
   } catch (err) {
     next(err);
